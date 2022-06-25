@@ -4,7 +4,7 @@ The purpose of this project is to scrape the prices of Sunspel's Riviera polo sh
 
 This repo contains source code and supporting files for a serverless application that can be deploy with the SAM CLI. It includes the following files and folders.
 
-- bitcoin-indicator-alert - Code for the application's Lambda function.
+- sunspel-discount-notifier - Code for the application's Lambda function.
 - events - Invocation events that you can use to invoke the function.
 - template.yaml - A template that defines the application's AWS resources.
 
@@ -42,17 +42,17 @@ You can find your API Gateway Endpoint URL in the output values displayed after 
 Build your application with the `sam build` command.
 
 ```bash
-bitcoin-indicator-alert$ sam build
+sunspel-discount-notifier$ sam build
 ```
 
-The SAM CLI installs dependencies defined in `bitcoin-indicator-alert/requirements.txt`, creates a deployment package, and saves it in the `.aws-sam/build` folder.
+The SAM CLI installs dependencies defined in `sunspel-discount-notifier/requirements.txt`, creates a deployment package, and saves it in the `.aws-sam/build` folder.
 
 Test a single function by invoking it directly with a test event. An event is a JSON document that represents the input that the function receives from the event source. Test events are included in the `events` folder in this project.
 
 Run functions locally and invoke them with the `sam local invoke` command.
 
 ```bash
-bitcoin-indicator-alert$ sam local invoke BitcoinIndicatorAlertFunction --event events/event.json
+sunspel-discount-notifier$ sam local invoke SunspelDiscountNotifierFunction --event events/event.json
 ```
 
 ## Add a resource to your application
@@ -65,7 +65,7 @@ To simplify troubleshooting, SAM CLI has a command called `sam logs`. `sam logs`
 `NOTE`: This command works for all AWS Lambda functions; not just the ones you deploy using SAM.
 
 ```bash
-bitcoin-indicator-alert$ sam logs -n BitcoinIndicatorAlertFunction --stack-name bitcoin-indicator-alert --tail
+sunspel-discount-notifier$ sam logs -n SunspelDiscountNotifierFunction --stack-name sunspel-discount-notifier --tail
 ```
 
 You can find more information and examples about filtering Lambda function logs in the [SAM CLI Documentation](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-logging.html).
@@ -75,5 +75,5 @@ You can find more information and examples about filtering Lambda function logs 
 To delete the sample application that you created, use the AWS CLI. Assuming you used your project name for the stack name, you can run the following:
 
 ```bash
-aws cloudformation delete-stack --stack-name bitcoin-indicator-alert
+aws cloudformation delete-stack --stack-name sunspel-discount-notifier
 ```

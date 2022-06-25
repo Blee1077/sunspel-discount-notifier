@@ -2,9 +2,9 @@ version = 0.1
 [default]
 [default.deploy]
 [default.deploy.parameters]
-stack_name = "bitcoin-indicator-alert-app"
+stack_name = "sunspel-discount-notifier-app"
 s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-9oqfaddn9oiy"
-s3_prefix = "bitcoin-indicator-alert-app"
+s3_prefix = "sunspel-discount-notifier-app"
 region = "eu-west-2"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"

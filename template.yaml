@@ -1,18 +1,19 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  bitcoin-indicator-alert
+  sunspel-dicount-notifier
 
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
     Timeout: 600
     MemorySize: 500
 
 Resources:
-  BitcoinIndicatorAlertFunction:
-    Type: AWS::Serverless::Function
+  SunspelDiscountNotifierFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: bitcoin-indicator-alert/
+      CodeUri: sunspel_discount_notifier/
       Handler: app.lambda_handler
       Runtime: python3.9
       Policies:
@@ -25,16 +26,19 @@ Resources:
           Type: Schedule
           Properties:
             Schedule: cron(0 8 * * ? *)
-            Name: BitcoinIndicatorAlertSchedule
-            Description: Calculates bitcoin indicator metrics and sends email alerts when thresholds are triggered.
+            Name: SunspelDiscountNotifierSchedule
+            Description: Sends an email to me when Sunspel has discounts on their Riviera polo shirts.
             Enabled: true
-            Input: '{"email_secret_bucket": "crypto-indicator-alert", "email_secret_json_key": "outlook-email-secret.json", "api_secret_bucket": "crypto-indicator-alert", "api_secret_json_key": "glassnode_api_key.json"}'
+            Input: '{"min_discount_perc": 25, "email_secret_bucket": "crypto-indicator-alert", "email_secret_json_key": "outlook-email-secret.json"}'
 
 
 Outputs:
-  BitcoinIndicatorAlertFunction:
-    Description: "Bitcoin Indicator Alert Function ARN"
-    Value: !GetAtt BitcoinIndicatorAlertFunction.Arn
-  BitcoinIndicatorAlertIamRole:
-    Description: "Implicit IAM Role created for Bitcoin Indicator Alert function"
-    Value: !GetAtt BitcoinIndicatorAlertFunctionRole.Arn
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  SunspelDiscountNotifierFunction:
+    Description: "Sunspel Discount Notifier Function ARN"
+    Value: !GetAtt SunspelDiscountNotifierFunction.Arn
+  SunspelDiscountNotifierIamRole:
+    Description: "Implicit IAM Role created for Sunspel Discount Notifier function"
+    Value: !GetAtt SunspelDiscountNotifierFunctionRole.Arn

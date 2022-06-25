@@ -1,6 +1,5 @@
 {
+  "min_discount_perc": 25,
   "email_secret_bucket": "crypto-indicator-alert",
-  "email_secret_json_key": "outlook-email-secret.json",
-  "api_secret_bucket": "crypto-indicator-alert",
-  "api_secret_json_key": "glassnode_api_key.json"
+  "email_secret_json_key": "outlook-email-secret.json"
 }

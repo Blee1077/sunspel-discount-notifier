@@ -1,0 +1,5 @@
+requests
+pandas
+redmail
+pretty_html_table
+beautifulsoup4
