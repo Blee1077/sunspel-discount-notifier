@@ -1,6 +1,6 @@
 # Sunspel Riveria Polo-shirt Discount Notifier
 
-The purpose of this project is to scrape the prices of Sunspel's Riviera polo shirts (https://www.sunspel.com/uk/mens/polo-shirts.html) on a daily basis and send me an email when there is a discount.
+The purpose of this project is to scrape the prices of Sunspel's Riviera polo shirts (https://www.sunspel.com/uk/mens/polo-shirts.html) on a daily basis and send me an email when there is a discount.  It is an AWS Lambda function that is scheduled to run on a daily basis using an EventBridge rule.
 
 This repo contains source code and supporting files for a serverless application that can be deploy with the SAM CLI. It includes the following files and folders.
 
