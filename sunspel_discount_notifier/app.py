@@ -159,17 +159,17 @@ def lambda_handler(event, context):
         # Set up email
         email_secret = load_json(event['email_secret_bucket'], event['email_secret_json_key'])
         email = EmailSender(
-                host="smtp.office365.com",
-                port=587,
-                user_name=email_secret['email'],
+                host=email_secret['host'],
+                port=email_secret['port'],
+                username=email_secret['sender_email'],
                 password=email_secret['password']
             )
     
         # Send email
         email.send(
             subject="Sunspel has discounts (>25%) on Riviera polo shirts!",
-            sender=email_secret['email'],
-            receivers=[email_secret['email']],
+            sender=email_secret['sender_email'],
+            receivers=[email_secret['receiver_email']],
             html=html
         )
         
