@@ -1,5 +1,0 @@
-{
-  "min_discount_perc": 25,
-  "email_secret_bucket": "crypto-indicator-alert",
-  "email_secret_json_key": "outlook-email-secret.json"
-}
