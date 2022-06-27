@@ -5,7 +5,6 @@ The purpose of this project is to scrape the prices of Sunspel's Riviera polo sh
 This repo contains source code and supporting files for a serverless application that can be deploy with the SAM CLI. It includes the following files and folders.
 
 - sunspel-discount-notifier - Code for the application's Lambda function.
-- events - Invocation events that you can use to invoke the function.
 - template.yaml - A template that defines the application's AWS resources.
 
 The application uses several AWS resources, including Lambda functions and an EventBridge rule. These resources are defined in the `template.yaml` file in this project. You can update the template to add AWS resources through the same deployment process that updates your application code.
@@ -18,7 +17,7 @@ The application uses several AWS resources, including Lambda functions and an Ev
 4. An pre-existing S3 bucket
 5. A JSON file named containing email details with the following structure:
 
-    ```yaml
+    ```php
     {
         "sender_email": "example1@mail.com" // Address to send emails from
         "password": "passwordvalue" // Password for sender_email
@@ -50,6 +49,7 @@ The first command will build the source of this application. The second command 
 
 * **Stack Name**: The name of the stack to deploy to CloudFormation. This should be unique to your account and region, and a good starting point would be something matching this project's function.
 * **AWS Region**: The AWS region you want to deploy this app to.
+* **SNS Email Parameter**: The email address to send execution failure notifications.
 * **Confirm changes before deploy**: If set to yes, any change sets will be shown to you before execution for manual review. If set to no, the AWS SAM CLI will automatically deploy application changes.
 * **Allow SAM CLI IAM role creation**: Many AWS SAM templates, including this example, create AWS IAM roles required for the AWS Lambda function(s) included to access AWS services. By default, these are scoped down to minimum required permissions. To deploy an AWS CloudFormation stack which creates or modifies IAM roles, the `CAPABILITY_IAM` value for `capabilities` must be provided. If permission isn't provided through this prompt, to deploy this example you must explicitly pass `--capabilities CAPABILITY_IAM` to the `sam deploy` command.
 * **Save arguments to samconfig.toml**: If set to yes, your choices will be saved to a configuration file inside the project, so that in the future you can just re-run `sam deploy` without parameters to deploy changes to this application.
