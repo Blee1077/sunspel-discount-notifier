@@ -1,6 +1,6 @@
 # Sunspel Riveria Polo-shirt Discount Notifier
 
-The purpose of this project is to scrape the prices of Sunspel's Riviera polo shirts (https://www.sunspel.com/uk/mens/polo-shirts.html) on a daily basis and send me an email when there is a discount.  It is an AWS Lambda function that is scheduled to run on a daily basis using an EventBridge rule.
+The purpose of this project is to scrape the prices of Sunspel's Riviera polo shirts (https://www.sunspel.com/uk/mens/polo-shirts.html) on a daily basis and send me an email when there is a discount.  The core functionality is an AWS Lambda function that is scheduled to run on a daily basis using an EventBridge rule, AWS SAM is used to create all the necessary AWS resources to get this application up and running.
 
 This repo contains source code and supporting files for a serverless application that can be deploy with the SAM CLI. It includes the following files and folders.
 
@@ -10,36 +10,53 @@ This repo contains source code and supporting files for a serverless application
 
 The application uses several AWS resources, including Lambda functions and an EventBridge rule. These resources are defined in the `template.yaml` file in this project. You can update the template to add AWS resources through the same deployment process that updates your application code.
 
-## Deploy the sample application
+## Pre-requisites
+
+1. SAM CLI - [Install the SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
+2. Python 3 - [Install Python 3](https://www.python.org/downloads/)
+3. Docker - [Install Docker community edition](https://hub.docker.com/search/?type=edition&offering=community)
+4. An pre-existing S3 bucket
+5. A JSON file named containing email details with the following structure:
+
+    ```json
+    {
+        "sender_email": "example1@mail.com" // Address to send emails from
+        "password": "passwordvalue" // Password for sender_email
+        "host": "mail.example.com" // Email host server
+        "port": 587 // Port number needed to communicate with host server
+        "receiver_email": "example2@mail.com" // Address to receive emails (can be same)
+    }
+    ```
+
+## Configurations
+The following steps need to be taken in the `template.yaml` file before the application can be deployed:
+
+1. Replace the value of the `EMAIL_SECRET_BUCKET` global environment variable with your pre-existing S3 bucket name.
+2. Similarly, replace the value of the `EMAIL_SECRET_JSON_KEY` global environment variable with your JSON file containing email details.
+3. (Optional) Adjust the value of `MIN_DISCOUNT_PERC` to your preference, by default this is set to 50% meaning that an email will only be sent once a product reaches a discount of 50%.
+
+## Deploy the application
 
 The Serverless Application Model Command Line Interface (SAM CLI) is an extension of the AWS CLI that adds functionality for building and testing Lambda applications. It uses Docker to run your functions in an Amazon Linux environment that matches Lambda. It can also emulate your application's build environment and API.
 
-To use the SAM CLI, you need the following tools.
-
-* SAM CLI - [Install the SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
-* [Python 3 installed]
-* Docker - [Install Docker community edition](https://hub.docker.com/search/?type=edition&offering=community)
-
-To build and deploy your application for the first time, run the following in your shell:
+To build and deploy the application for the first time, run the following in your shell:
 
 ```bash
 sam build
 sam deploy --guided
 ```
 
-The first command will build the source of your application. The second command will package and deploy your application to AWS, with a series of prompts:
+The first command will build the source of this application. The second command will package and deploy this application to AWS, with a series of prompts:
 
-* **Stack Name**: The name of the stack to deploy to CloudFormation. This should be unique to your account and region, and a good starting point would be something matching your project name.
-* **AWS Region**: The AWS region you want to deploy your app to.
+* **Stack Name**: The name of the stack to deploy to CloudFormation. This should be unique to your account and region, and a good starting point would be something matching this project's function.
+* **AWS Region**: The AWS region you want to deploy this app to.
 * **Confirm changes before deploy**: If set to yes, any change sets will be shown to you before execution for manual review. If set to no, the AWS SAM CLI will automatically deploy application changes.
 * **Allow SAM CLI IAM role creation**: Many AWS SAM templates, including this example, create AWS IAM roles required for the AWS Lambda function(s) included to access AWS services. By default, these are scoped down to minimum required permissions. To deploy an AWS CloudFormation stack which creates or modifies IAM roles, the `CAPABILITY_IAM` value for `capabilities` must be provided. If permission isn't provided through this prompt, to deploy this example you must explicitly pass `--capabilities CAPABILITY_IAM` to the `sam deploy` command.
-* **Save arguments to samconfig.toml**: If set to yes, your choices will be saved to a configuration file inside the project, so that in the future you can just re-run `sam deploy` without parameters to deploy changes to your application.
+* **Save arguments to samconfig.toml**: If set to yes, your choices will be saved to a configuration file inside the project, so that in the future you can just re-run `sam deploy` without parameters to deploy changes to this application.
 
-You can find your API Gateway Endpoint URL in the output values displayed after deployment.
+## Use the SAM CLI to build locally
 
-## Use the SAM CLI to build and test locally
-
-Build your application with the `sam build` command.
+Build this application with the `sam build` command.
 
 ```bash
 sunspel-discount-notifier$ sam build
@@ -47,22 +64,9 @@ sunspel-discount-notifier$ sam build
 
 The SAM CLI installs dependencies defined in `sunspel-discount-notifier/requirements.txt`, creates a deployment package, and saves it in the `.aws-sam/build` folder.
 
-Test a single function by invoking it directly with a test event. An event is a JSON document that represents the input that the function receives from the event source. Test events are included in the `events` folder in this project.
-
-Run functions locally and invoke them with the `sam local invoke` command.
-
-```bash
-sunspel-discount-notifier$ sam local invoke SunspelDiscountNotifierFunction --event events/event.json
-```
-
-## Add a resource to your application
-The application template uses AWS Serverless Application Model (AWS SAM) to define application resources. AWS SAM is an extension of AWS CloudFormation with a simpler syntax for configuring common serverless application resources such as functions, triggers, and APIs. For resources not included in [the SAM specification](https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md), you can use standard [AWS CloudFormation](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html) resource types.
-
 ## Fetch, tail, and filter Lambda function logs
 
-To simplify troubleshooting, SAM CLI has a command called `sam logs`. `sam logs` lets you fetch logs generated by your deployed Lambda function from the command line. In addition to printing the logs on the terminal, this command has several nifty features to help you quickly find the bug.
-
-`NOTE`: This command works for all AWS Lambda functions; not just the ones you deploy using SAM.
+To simplify troubleshooting, SAM CLI has a command called `sam logs`. `sam logs` lets you fetch logs generated by the deployed Lambda function from the command line. In addition to printing the logs on the terminal, this command has several nifty features to help you quickly find the bug.
 
 ```bash
 sunspel-discount-notifier$ sam logs -n SunspelDiscountNotifierFunction --stack-name sunspel-discount-notifier --tail
@@ -72,7 +76,7 @@ You can find more information and examples about filtering Lambda function logs 
 
 ## Cleanup
 
-To delete the sample application that you created, use the AWS CLI. Assuming you used your project name for the stack name, you can run the following:
+To delete the sample application that you created, use the AWS CLI. Assuming you used this project name for the stack name, you can run the following:
 
 ```bash
 aws cloudformation delete-stack --stack-name sunspel-discount-notifier
