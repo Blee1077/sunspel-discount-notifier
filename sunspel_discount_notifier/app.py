@@ -142,7 +142,7 @@ def lambda_handler(event, context):
         """.format(
             MIN_DISCOUNT_PERC,
             build_table(
-                df.sort_values(by='discount (%)', ascending=False),
+                df[df['discount (%)']>=MIN_DISCOUNT_PERC].sort_values(by='discount (%)', ascending=False),
                 'blue_light'
             )
         )
