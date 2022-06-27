@@ -19,11 +19,11 @@ The application uses several AWS resources, including Lambda functions and an Ev
 
     ```yaml
     {
-        "sender_email": "example1@mail.com" // Address to send emails from
-        "password": "passwordvalue" // Password for sender_email
-        "host": "mail.example.com" // Email host server
-        "port": 587 // Port number needed to communicate with host server
-        "receiver_email": "example2@mail.com" // Address to receive emails (can be same)
+        "sender_email": "example1@mail.com"    // Address to send emails from
+        "password": "passwordvalue"            // Password for sender_email
+        "host": "mail.example.com"             // Email host server
+        "port": 587                            // Port number needed to communicate with host server
+        "receiver_email": "example2@mail.com"  // Address to receive emails (can be same)
     }
     ```
 
