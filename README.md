@@ -31,7 +31,7 @@ The application uses several AWS resources, including Lambda functions and an Ev
 The following steps need to be taken in the `template.yaml` file before the application can be deployed:
 
 1. Replace the value of the `EMAIL_SECRET_BUCKET` global environment variable with your pre-existing S3 bucket name.
-2. Similarly, replace the value of the `EMAIL_SECRET_JSON_KEY` global environment variable with your JSON file containing email details.
+2. Similarly, replace the value of the `EMAIL_SECRET_JSON_KEY` global environment variable with the name of your JSON file containing email details placed in the root of your pre-existing S3 bucket.
 3. (Optional) Adjust the value of `MIN_DISCOUNT_PERC` to your preference, by default this is set to 50% meaning that an email will only be sent once a product reaches a discount of 50%.
 
 ## Deploy the application
