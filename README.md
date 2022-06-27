@@ -11,11 +11,12 @@ The application uses several AWS resources, including Lambda functions, an Event
 
 ## Pre-requisites
 
-1. SAM CLI - [Install the SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
-2. Python 3 - [Install Python 3](https://www.python.org/downloads/)
-3. Docker - [Install Docker community edition](https://hub.docker.com/search/?type=edition&offering=community)
-4. An pre-existing S3 bucket
-5. A JSON file named containing email details with the following structure:
+1. An AWS account
+2. SAM CLI - [Install the SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
+3. Python 3 - [Install Python 3](https://www.python.org/downloads/)
+4. Docker - [Install Docker community edition](https://hub.docker.com/search/?type=edition&offering=community)
+5. An pre-existing S3 bucket
+6. A JSON file named containing email details with the following structure:
 
     ```yaml
     {
