@@ -17,7 +17,7 @@ The application uses several AWS resources, including Lambda functions and an Ev
 4. An pre-existing S3 bucket
 5. A JSON file named containing email details with the following structure:
 
-    ```php
+    ```yaml
     {
         "sender_email": "example1@mail.com" // Address to send emails from
         "password": "passwordvalue" // Password for sender_email
