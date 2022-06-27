@@ -76,7 +76,7 @@ You can find more information and examples about filtering Lambda function logs 
 
 ## Cleanup
 
-To delete the sample application that you created, use the AWS CLI. Assuming you used this project name for the stack name, you can run the following:
+To delete the deployed application, use the AWS CLI. Assuming you used this project name for the stack name, you can run the following:
 
 ```bash
 aws cloudformation delete-stack --stack-name sunspel-discount-notifier
