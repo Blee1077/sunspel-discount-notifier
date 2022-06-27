@@ -23,7 +23,7 @@ The application uses several AWS resources, including Lambda functions and an Ev
         "password": "passwordvalue"            // Password for sender_email
         "host": "mail.example.com"             // Email host server
         "port": 587                            // Port number needed to communicate with host server
-        "receiver_email": "example2@mail.com"  // Address to receive emails (can be same)
+        "receiver_email": "example2@mail.com"  // Address to receive emails (can be same as sender_email)
     }
     ```
 
@@ -51,7 +51,7 @@ The first command will build the source of this application. The second command 
 * **AWS Region**: The AWS region you want to deploy this app to.
 * **SNS Email Parameter**: The email address to send execution failure notifications.
 * **Confirm changes before deploy**: If set to yes, any change sets will be shown to you before execution for manual review. If set to no, the AWS SAM CLI will automatically deploy application changes.
-* **Allow SAM CLI IAM role creation**: Many AWS SAM templates, including this example, create AWS IAM roles required for the AWS Lambda function(s) included to access AWS services. By default, these are scoped down to minimum required permissions. To deploy an AWS CloudFormation stack which creates or modifies IAM roles, the `CAPABILITY_IAM` value for `capabilities` must be provided. If permission isn't provided through this prompt, to deploy this example you must explicitly pass `--capabilities CAPABILITY_IAM` to the `sam deploy` command.
+* **Allow SAM CLI IAM role creation**: Many AWS SAM templates, including this one, create AWS IAM roles required for the AWS Lambda function(s) included to access AWS services. By default, these are scoped down to minimum required permissions. To deploy an AWS CloudFormation stack which creates or modifies IAM roles, the `CAPABILITY_IAM` value for `capabilities` must be provided. If permission isn't provided through this prompt, to deploy this example you must explicitly pass `--capabilities CAPABILITY_IAM` to the `sam deploy` command.
 * **Save arguments to samconfig.toml**: If set to yes, your choices will be saved to a configuration file inside the project, so that in the future you can just re-run `sam deploy` without parameters to deploy changes to this application.
 
 ## Use the SAM CLI to build locally
