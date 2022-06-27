@@ -12,6 +12,11 @@ Globals:
     Runtime: python3.9
     Architectures:
       - x86_64
+    Environment:
+      Variables:
+        MIN_DISCOUNT_PERC: 25 # Minimum discount percentage to send an email
+        EMAIL_SECRET_BUCKET: "crypto-indicator-alert" # S3 bucket that contains email secrets, you put in your S3 bucket
+        EMAIL_SECRET_JSON_KEY: "outlook-email-secret.json" # JSON file that contains email secrets, you put this in EMAIL_SECRET_BUCKET (structure defined in README)
 
 Parameters:
   SNSEmailParameter:
@@ -34,7 +39,6 @@ Resources:
             Name: SunspelDiscountNotifierSchedule
             Description: Sends an email to me when Sunspel has discounts on their Riviera polo shirts.
             Enabled: true
-            Input: '{"min_discount_perc": 25, "email_secret_bucket": "crypto-indicator-alert", "email_secret_json_key": "outlook-email-secret.json"}'
 
   SunspelDiscountErrorTopic:
     Type: AWS::SNS::Topic

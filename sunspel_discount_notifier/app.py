@@ -1,4 +1,5 @@
 import re
+import os
 import json
 import requests
 import boto3
@@ -80,7 +81,7 @@ def size_availability(url: str):
 def lambda_handler(event, context):
     
     # Get the minimum discount percentage for sending out an email
-    MIN_DISCOUNT_PERC = int(event["min_discount_perc"])
+    MIN_DISCOUNT_PERC = int(os.environ['MIN_DISCOUNT_PERC'])
 
     # Define base URL and get all products from the page
     URL = "https://www.sunspel.com/uk/mens/polo-shirts/riviera-polo.html"
@@ -157,7 +158,7 @@ def lambda_handler(event, context):
             html = html.replace(img_url, f'<img src={img_url} alt="" width="135" height="180">')
         
         # Set up email
-        email_secret = load_json(event['email_secret_bucket'], event['email_secret_json_key'])
+        email_secret = load_json(os.environ['EMAIL_SECRET_BUCKET'], os.environ['EMAIL_SECRET_JSON_KEY'])
         email = EmailSender(
                 host=email_secret['host'],
                 port=email_secret['port'],
@@ -167,7 +168,7 @@ def lambda_handler(event, context):
     
         # Send email
         email.send(
-            subject="Sunspel has discounts (>25%) on Riviera polo shirts!",
+            subject=f"Sunspel has discounts up to {int(df['discount (%)'].max())}% on Riviera polo shirts!",
             sender=email_secret['sender_email'],
             receivers=[email_secret['receiver_email']],
             html=html
