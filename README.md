@@ -1,7 +1,6 @@
 # Sunspel Riveria Polo-shirt Discount Notifier
 [![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)](https://forthebadge.com) [![forthebadge](https://forthebadge.com/images/badges/you-didnt-ask-for-this.svg)](https://forthebadge.com)
 
-
 The purpose of this project is to scrape the prices of Sunspel's Riviera polo shirts (https://www.sunspel.com/uk/mens/polo-shirts.html) on a daily basis and send me an email when there is a discount.  The core functionality is an AWS Lambda function that is scheduled to run on a daily basis using an EventBridge rule, AWS SAM is used to create all the necessary AWS resources to get this application up and running.
 
 This repo contains source code and supporting files for a serverless application that can be deploy with the SAM CLI. It includes the following files and folders.
@@ -10,6 +9,15 @@ This repo contains source code and supporting files for a serverless application
 - template.yaml - A template that defines the application's AWS resources.
 
 The application uses several AWS resources, including Lambda functions, an EventBridge rule, and an SNS topic. These resources are defined in the `template.yaml` file in this project.
+<br/><br/>
+<p align="center">
+  <img src="sample_sent_email.png" width="600" title="hover text">
+</p>
+
+<p align = "center">
+Example email content sent by the application when it a discount is found with minimum discount percent set to 50%
+</p>
+<br/><br/>
 
 ## Pre-requisites
 
