@@ -68,7 +68,7 @@ The first command will build the source of this application. The second command 
 
 ## Use the SAM CLI to build locally
 
-Build this application with the `sam build --use-container` command. The `use-container` option makes it so that the build happens in Docker rather than locally.
+Build this application with the `sam build --use-container` command. The `use-container` option makes it so that the build happens inside a Lambda-like container.
 
 ```bash
 sam build --use-container
