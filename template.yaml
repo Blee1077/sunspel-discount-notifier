@@ -7,7 +7,7 @@ Description: >
 Globals:
   Function:
     Timeout: 600
-    MemorySize: 500
+    MemorySize: 250
     Handler: app.lambda_handler
     Runtime: python3.9
     Architectures:
