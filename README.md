@@ -53,7 +53,7 @@ The Serverless Application Model Command Line Interface (SAM CLI) is an extensio
 To build and deploy the application for the first time, run the following in your shell:
 
 ```bash
-sam build
+sam build --use-container
 sam deploy --guided
 ```
 
@@ -68,10 +68,10 @@ The first command will build the source of this application. The second command 
 
 ## Use the SAM CLI to build locally
 
-Build this application with the `sam build` command.
+Build this application with the `sam build --use-container` command. The `use-container` option makes it so that the build happens in Docker rather than locally.
 
 ```bash
-sunspel-discount-notifier$ sam build
+sam build --use-container
 ```
 
 The SAM CLI installs dependencies defined in `sunspel-discount-notifier/requirements.txt`, creates a deployment package, and saves it in the `.aws-sam/build` folder.
