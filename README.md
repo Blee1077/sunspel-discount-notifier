@@ -46,27 +46,9 @@ The following steps need to be taken in the `template.yaml` file before the appl
 2. Similarly, replace the value of the `EMAIL_SECRET_JSON_KEY` global environment variable with the name of your JSON file containing email details placed in the root of your pre-existing S3 bucket.
 3. (Optional) Adjust the value of `MIN_DISCOUNT_PERC` to your preference, by default this is set to 50% meaning that an email will only be sent once a product reaches a discount of 50%.
 
-## Deploy the application
+## Use the SAM CLI to build locally
 
 The Serverless Application Model Command Line Interface (SAM CLI) is an extension of the AWS CLI that adds functionality for building and testing Lambda applications. It uses Docker to run your functions in an Amazon Linux environment that matches Lambda. It can also emulate your application's build environment and API.
-
-To build and deploy the application for the first time, run the following in your shell:
-
-```bash
-sam build --use-container
-sam deploy --guided
-```
-
-The first command will build the source of this application. The second command will package and deploy this application to AWS, with a series of prompts:
-
-* **Stack Name**: The name of the stack to deploy to CloudFormation. This should be unique to your account and region, and a good starting point would be something matching this project's function.
-* **AWS Region**: The AWS region you want to deploy this app to.
-* **SNS Email Parameter**: The email address to send execution failure notifications.
-* **Confirm changes before deploy**: If set to yes, any change sets will be shown to you before execution for manual review. If set to no, the AWS SAM CLI will automatically deploy application changes.
-* **Allow SAM CLI IAM role creation**: Many AWS SAM templates, including this one, create AWS IAM roles required for the AWS Lambda function(s) included to access AWS services. By default, these are scoped down to minimum required permissions. To deploy an AWS CloudFormation stack which creates or modifies IAM roles, the `CAPABILITY_IAM` value for `capabilities` must be provided. If permission isn't provided through this prompt, to deploy this example you must explicitly pass `--capabilities CAPABILITY_IAM` to the `sam deploy` command.
-* **Save arguments to samconfig.toml**: If set to yes, your choices will be saved to a configuration file inside the project, so that in the future you can just re-run `sam deploy` without parameters to deploy changes to this application.
-
-## Use the SAM CLI to build locally
 
 Build this application with the `sam build --use-container` command. The `use-container` option makes it so that the build happens inside a Lambda-like container.
 
@@ -74,7 +56,24 @@ Build this application with the `sam build --use-container` command. The `use-co
 sam build --use-container
 ```
 
-The SAM CLI installs dependencies defined in `sunspel-discount-notifier/requirements.txt`, creates a deployment package, and saves it in the `.aws-sam/build` folder.
+For each of the Lambda functions, the SAM CLI installs dependencies defined in `requirements.txt`, creates a deployment package, and saves it in the `.aws-sam/build` folder.
+
+## Deploy the application
+
+To deploy the application for the first time, run the following command in your shell after building:
+
+```bash
+sam deploy --guided
+```
+
+This command will package and deploy this application to AWS, with a series of prompts:
+
+* **Stack Name**: The name of the stack to deploy to CloudFormation. This should be unique to your account and region, and a good starting point would be something matching this project's function.
+* **AWS Region**: The AWS region you want to deploy this app to.
+* **SNS Email Parameter**: The email address to send execution failure notifications.
+* **Confirm changes before deploy**: If set to yes, any change sets will be shown to you before execution for manual review. If set to no, the AWS SAM CLI will automatically deploy application changes.
+* **Allow SAM CLI IAM role creation**: Many AWS SAM templates, including this one, create AWS IAM roles required for the AWS Lambda function(s) included to access AWS services. By default, these are scoped down to minimum required permissions. To deploy an AWS CloudFormation stack which creates or modifies IAM roles, the `CAPABILITY_IAM` value for `capabilities` must be provided. If permission isn't provided through this prompt, to deploy this example you must explicitly pass `--capabilities CAPABILITY_IAM` to the `sam deploy` command.
+* **Save arguments to samconfig.toml**: If set to yes, your choices will be saved to a configuration file inside the project, so that in the future you can just re-run `sam deploy` without parameters to deploy changes to this application.
 
 ## Cleanup
 
