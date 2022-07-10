@@ -31,11 +31,11 @@ Example email content sent by the application when a discount is found. <br> Min
 
     ```yaml
     {
-        "sender_email": "example1@mail.com"    # Address to send emails from
-        "password": "passwordvalue"            # Password for sender_email
-        "host": "mail.example.com"             # Email host server
-        "port": 587                            # Port number needed to communicate with host server
-        "receiver_email": "example2@mail.com"  # Address to receive emails (can be same as sender_email)
+        "sender_email": "example1@mail.com"    # Address to send emails from as string
+        "password": "passwordvalue"            # Password for sender_email as string
+        "host": "mail.example.com"             # Email host server as string
+        "port": 587                            # Port number needed to communicate with host server as integer
+        "receiver_email": "example2@mail.com"  # Address to receive emails (can be same as sender_email) as string
     }
     ```
 
