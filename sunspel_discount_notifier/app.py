@@ -75,7 +75,7 @@ def size_availability(url: str):
         else:
             avail_dict[avail].append(size)
 
-    return avail_dict['InStock']
+    return avail_dict.get('InStock', ['None'])
     
 
 def lambda_handler(event, context):
