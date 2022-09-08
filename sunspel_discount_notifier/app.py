@@ -3,10 +3,19 @@ import os
 import json
 import requests
 import boto3
+import logging
 import pandas as pd
 from redmail import EmailSender
 from bs4 import BeautifulSoup
 from pretty_html_table import build_table
+
+# Set up logging
+logger = logging.getLogger('sunspel-discount-notifier')
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 s3 = boto3.resource('s3')
 
@@ -34,7 +43,7 @@ def convert_dict_to_dataframe(prod_dict: dict):
     Returns:
         Pandas DataFrame
     """
-   # Specify the dtypes of columns to cast
+    # Specify the dtypes of columns to cast
     convert_dict = {
         'url': str,
         'price': float,
@@ -44,6 +53,14 @@ def convert_dict_to_dataframe(prod_dict: dict):
     # Convert the dict into a dataframe
     prod_df = pd.DataFrame.from_records(prod_dict).T.reset_index()
     prod_df = prod_df.drop(columns=['index'])
+    
+    # Check required keys are in dict
+    try:
+        assert set(prod_df.columns).intersection(convert_dict.keys()) == set(convert_dict.keys())
+    except AssertionError as e:
+        missing_keys = set(convert_dict.keys()).difference(prod_dict.keys())
+        logger.info(f"Missing following keys in scraped product dictionary: {', '.join(missing_keys)}")
+        raise e
 
     # Cast columns
     for col, dtype in convert_dict.items():
@@ -84,31 +101,58 @@ def lambda_handler(event, context):
     MIN_DISCOUNT_PERC = int(os.environ['MIN_DISCOUNT_PERC'])
 
     # Define base URL and get all products from the page
-    URL = "https://www.sunspel.com/uk/mens/polo-shirts/riviera-polo.html"
-    page = requests.get(URL, headers = {'User-agent': 'tmp'})
+    base_url = "https://www.sunspel.com/"
+    riv_polo_url = "uk/mens/polo-shirts/riviera-polo.html"
+    page = requests.get(base_url+riv_polo_url, headers = {'User-agent': 'tmp'})
     soup = BeautifulSoup(page.content, "html.parser")
-    product_list = soup.find_all("article", class_="product-item-info")
-
+    product_list = soup.find_all("li", class_="prd-List_Item")
+    assert len(product_list) > 0, "No products found from HTML, web page has changed."
+    
     # Loop through each product
     prod_dict = {}
     for prod in product_list:
         
         # Get the product type
-        prod_type = prod.find("a", class_="product-item-link").get_text().strip().replace(r'\n', '')
+        try:
+            prod_type = prod.find("h3", class_="prd-Card_Title").get_text().strip()
+        except KeyError as e:
+            logger.info("Unable to get product type from product HTML, web page has changed.")
+            raise e
         
         # If it isn't the one I want then move on
         if len(prod_type.split(' ')) != 3:
             continue
         
         # Get product ID, colour, URL, image URL, and price
-        prod_id = int(prod.find("div", class_="price-box price-final_price")['data-product-id'])
-        prod_colour = prod.find("div", class_="product-item-colour").get_text().split('\n')[1].strip()
-        prod_url = prod.find("a", class_="product-item-link")['href']
-        prod_img_url = prod.find('img', alt=prod_type)['data-src']
-        
-        for price in prod.find_all("span", class_="price-wrapper"):
-            if price['data-price-type']=="finalPrice":
-                prod_price = float(price['data-price-amount'])
+        try:
+            prod_id = int(prod['id'].split('-')[-1])
+        except KeyError as e:
+            logger.info("Unable to get product ID from product HTML, web page has changed.")
+            raise e
+
+        try:
+            prod_colour = prod.find("p", class_="prd-Card_Colour").get_text().strip()
+        except KeyError as e:
+            logger.info("Unable to get product colour from product HTML, web page has changed.")
+            raise e
+
+        try:
+            prod_url = base_url + prod.find("a", class_="util-FauxLink_Link")['href']
+        except Exception as e:
+            logger.info("Unable to get product URL from product HTML, web page has changed.")
+            raise e
+
+        try:
+            prod_img_url = ('https:' + product_list[0].find('div', class_='prd-Card_Image').find('div', class_='rsp-Image').find('img', class_='rsp-Image_Image')['src']).split('?')[0]
+        except Exception as e:
+            logger.info("Unable to get product image URL from product HTML, web page has changed.")
+            raise e
+
+        try:
+            prod_price = float(prod.find('p', class_='prd-Card_Price').get_text().strip('£'))
+        except Exception as e:
+            logger.info("Unable to get product price from product HTML, web page has changed.")
+            raise e
         
         # Store in dictionary
         prod_dict[prod_id] = {}
