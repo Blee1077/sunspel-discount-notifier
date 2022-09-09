@@ -81,18 +81,31 @@ def size_availability(url: str):
     page = requests.get(url, headers = {'User-agent': 'tmp'})
     soup = BeautifulSoup(page.content, "html.parser")
     
+    # Try and see if this works
+    try:
+        prods_json_txt = soup.find('script', attrs={'type': "application/json", 'data-variant-selects-el':'data'}).text
+        size_details = json.loads(prods_json_txt)
+        
+    except AttributeError:
+        # If not then fall back to a different approach, if that fails then return list with failed string
+        try:
+            prods_json_txt = soup.find('script', attrs={'type': "application/json", 'data-variant-radios-el':'data'}).text
+            size_details = json.loads(prods_json_txt)
+            
+        except AttributeError:
+            return ['Failed to get sizes']
+
     avail_dict = {}
-    size_details = soup.find_all('span', class_="nosto_sku")
     for detail in size_details:
-        size = detail.find('span', class_="size").get_text()
-        avail = detail.find('span', class_="availability").get_text()
+        size = detail['title']
+        avail = detail['available']
 
         if avail not in avail_dict:
             avail_dict[avail] = [size]
         else:
             avail_dict[avail].append(size)
 
-    return avail_dict.get('InStock', ['None'])
+    return avail_dict.get(True, ['None'])
     
 
 def lambda_handler(event, context):
@@ -143,7 +156,14 @@ def lambda_handler(event, context):
             raise e
 
         try:
-            prod_img_url = ('https:' + product_list[0].find('div', class_='prd-Card_Image').find('div', class_='rsp-Image').find('img', class_='rsp-Image_Image')['src']).split('?')[0]
+            prod_img_url = (
+                'https:' + (
+                    product_list[0]
+                    .find('div', class_='prd-Card_Image')
+                    .find('div', class_='rsp-Image')
+                    .find('img', class_='rsp-Image_Image')['src']
+                    )
+                ).split('?')[0]
         except Exception as e:
             logger.info("Unable to get product image URL from product HTML, web page has changed.")
             raise e
@@ -175,7 +195,7 @@ def lambda_handler(event, context):
     
     # Only if there's products above threshold then send an email
     if abv_disc_thresh > 0:
-        html = """\
+        html = """
         <html>
           <head></head>
           <body>
