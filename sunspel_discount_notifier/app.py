@@ -158,7 +158,7 @@ def lambda_handler(event, context):
         try:
             prod_img_url = (
                 'https:' + (
-                    product_list[0]
+                    prod
                     .find('div', class_='prd-Card_Image')
                     .find('div', class_='rsp-Image')
                     .find('img', class_='rsp-Image_Image')['src']
@@ -169,7 +169,16 @@ def lambda_handler(event, context):
             raise e
 
         try:
-            prod_price = float(prod.find('p', class_='prd-Card_Price').get_text().strip('£'))
+            # Attempt to get Sale price
+            sale_price_lst = prod.find('p', class_='prd-Card_Price').find('span', class_='prd-Card_SalePrice').get_text().split('\n')
+            prod_price = float([sale_price_str.strip() for sale_price_str in sale_price_lst if len(sale_price_str.strip()) > 0 and '£' in sale_price_str][0].replace('£', ''))
+        except AttributeError as e:
+            logger.info("Couldn't get sale price, attempting to get regular price.")
+            try:
+                prod_price = float(prod.find('p', class_='prd-Card_Price').get_text().replace('£', ''))
+            except Exception as e:
+                logger.info("Unable to get product price from product HTML, web page has changed.")
+                raise e
         except Exception as e:
             logger.info("Unable to get product price from product HTML, web page has changed.")
             raise e
