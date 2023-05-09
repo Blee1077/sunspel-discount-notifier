@@ -3,24 +3,48 @@ Transform: AWS::Serverless-2016-10-31
 Description: >
   sunspel-dicount-notifier
 
+Parameters:
+  EmailSecretBucket:
+    Type: String
+    Description: S3 bucket that contains email secrets
+    NoEcho: true
+  EmailSecretJsonKey:
+    Type: String
+    Description: JSON file that contains email secrets (structure defined in README)
+    NoEcho: true
+  SNSEmailParameter:
+    Type: String
+    Description: Enter email address for execution failure SNS topic subscription.
+  Schedule:
+    Type: String
+    Description: Cron schedule for function invocation
+    Default: cron(0 8 * * ? *)
+  FunctionTimeout:
+    Type: Number
+    Description: Lambda function timeout
+    Default: 600
+  FunctionMemorySize:
+    Type: Number
+    Description: Lambda function memory size
+    Default: 275
+  MinDiscountPerc:
+    Type: Number
+    Description: Minimum discount percentage to send an email
+    Default: 50
+
 Globals:
   Function:
-    Timeout: 600
-    MemorySize: 275
+    Timeout: !Ref FunctionTimeout
+    MemorySize: !Ref FunctionMemorySize
     Handler: app.lambda_handler
     Runtime: python3.9
     Architectures:
       - x86_64
     Environment:
       Variables:
-        MIN_DISCOUNT_PERC: 50 # Minimum discount percentage to send an email
-        EMAIL_SECRET_BUCKET: "crypto-indicator-alert" # S3 bucket that contains email secrets, you put in your S3 bucket
-        EMAIL_SECRET_JSON_KEY: "outlook-email-secret.json" # JSON file that contains email secrets, you put this in EMAIL_SECRET_BUCKET (structure defined in README)
-
-Parameters:
-  SNSEmailParameter:
-    Type: String
-    Description: Enter email address for execution failure SNS topic subscription.
+        MIN_DISCOUNT_PERC: !Ref MinDiscountPerc
+        EMAIL_SECRET_BUCKET: !Ref EmailSecretBucket 
+        EMAIL_SECRET_JSON_KEY: !Ref EmailSecretJsonKey 
 
 Resources:
   SunspelDiscountNotifierFunction:
@@ -29,12 +53,12 @@ Resources:
       CodeUri: sunspel_discount_notifier/
       Policies:
         - S3ReadPolicy:
-            BucketName: "crypto-indicator-alert"
+            BucketName: !Ref EmailSecretBucket
       Events:
         InvocationLevel:
           Type: Schedule
           Properties:
-            Schedule: cron(0 8 * * ? *)
+            Schedule: !Ref Schedule
             Name: SunspelDiscountNotifierSchedule
             Description: Sends an email to me when Sunspel has discounts on their Riviera polo shirts.
             Enabled: true
